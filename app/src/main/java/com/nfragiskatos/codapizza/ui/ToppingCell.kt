@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.nfragiskatos.codapizza.model.Topping
@@ -36,7 +37,9 @@ fun ToppingCell(
     placement: ToppingPlacement?,
     onClickTopping: () -> Unit
 ) {
-    Row {
+    Row (
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Checkbox(checked = true, onCheckedChange = {/* TODO */})
         Column {
             Text(text = stringResource(id = topping.toppingName))
