@@ -10,17 +10,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import com.nfragiskatos.codapizza.model.Topping
 import com.nfragiskatos.codapizza.model.ToppingPlacement
+import com.nfragiskatos.codapizza.ui.PizzaBuilderScreen
 import com.nfragiskatos.codapizza.ui.ToppingCell
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ToppingCell(
-                topping = Topping.Pepperoni,
-                placement = ToppingPlacement.Left,
-                onClickTopping = {}
-            )
+            PizzaBuilderScreen()
         }
     }
 }
