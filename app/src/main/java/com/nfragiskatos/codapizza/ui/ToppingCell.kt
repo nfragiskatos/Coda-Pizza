@@ -12,7 +12,17 @@ import com.nfragiskatos.codapizza.model.ToppingPlacement
 
 @Preview
 @Composable
-private fun ToppingCellPreview() {
+private fun ToppingCellPreviewNotOnPizza() {
+    ToppingCell(
+        topping = Topping.Pepperoni,
+        placement = null,
+        onClickTopping = {}
+    )
+}
+
+@Preview
+@Composable
+private fun ToppingCellPreviewOnLeftHalf() {
     ToppingCell(
         topping = Topping.Pepperoni,
         placement = ToppingPlacement.Left,
@@ -30,7 +40,9 @@ fun ToppingCell(
         Checkbox(checked = true, onCheckedChange = {/* TODO */})
         Column {
             Text(text = stringResource(id = topping.toppingName))
-            Text(text = "Whole Pizza")
+            if (placement != null) {
+                Text(text = stringResource(id = placement.label))
+            }
         }
     }
 }
