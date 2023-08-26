@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,22 +23,27 @@ import com.nfragiskatos.codapizza.R
 import com.nfragiskatos.codapizza.model.Pizza
 import com.nfragiskatos.codapizza.model.Topping
 import com.nfragiskatos.codapizza.model.ToppingPlacement
-
-private var pizza by mutableStateOf(Pizza())
+import java.text.NumberFormat
 
 @Preview
 @Composable
 fun PizzaBuilderScreen(
     modifier: Modifier = Modifier
 ) {
+    var pizza by remember {
+        mutableStateOf(Pizza())
+    }
 
     Column(modifier = modifier) {
         ToppingsList(
+            pizza = pizza,
+            onEditPizza = {pizza = it},
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f, fill = true)
         )
         OrderButton(
+            pizza = pizza,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(64.dp)
@@ -48,6 +54,8 @@ fun PizzaBuilderScreen(
 
 @Composable
 private fun ToppingsList(
+    pizza: Pizza,
+    onEditPizza: (Pizza) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier) {
@@ -57,14 +65,14 @@ private fun ToppingsList(
                 placement = pizza.toppings[topping],
                 onClickTopping = {
                     val isOnPizza = pizza.toppings[topping] != null
-                    pizza = pizza.withTopping(
+                    onEditPizza( pizza.withTopping(
                         topping = topping,
                         placement = if (isOnPizza) {
                             null
                         } else {
                             ToppingPlacement.All
                         }
-                    )
+                    ))
                 }
             )
         }
@@ -73,14 +81,19 @@ private fun ToppingsList(
 
 @Composable
 private fun OrderButton(
+    pizza: Pizza,
     modifier: Modifier = Modifier
 ) {
     Button(
         modifier = modifier,
         onClick = { /*TODO*/ }
     ) {
+        val currencyFormatter = remember {
+            NumberFormat.getCurrencyInstance()
+        }
+        val price = currencyFormatter.format(pizza.price)
         Text(
-            text = stringResource(id = R.string.place_order_button).toUpperCase(Locale.current)
+            text = stringResource(id = R.string.place_order_button, price).toUpperCase(Locale.current)
         )
     }
 }
