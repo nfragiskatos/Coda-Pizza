@@ -3,6 +3,8 @@ package com.nfragiskatos.codapizza.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +24,7 @@ fun PizzaBuilderScreen(
     modifier: Modifier = Modifier
 ) {
 
-    Column (modifier = modifier) {
+    Column(modifier = modifier) {
         ToppingsList(
             modifier = Modifier
                 .fillMaxWidth()
@@ -31,7 +33,7 @@ fun PizzaBuilderScreen(
         OrderButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(64.dp)
         )
 
     }
@@ -41,12 +43,17 @@ fun PizzaBuilderScreen(
 private fun ToppingsList(
     modifier: Modifier = Modifier
 ) {
-    ToppingCell(
-        topping = Topping.Pepperoni,
-        placement = ToppingPlacement.Left,
-        onClickTopping = {},
-        modifier = modifier
-    )
+    LazyColumn(modifier = modifier) {
+        items(Topping.values()) { topping ->
+            ToppingCell(
+                topping = topping,
+                placement = ToppingPlacement.Left,
+                onClickTopping = {
+                    // TODO
+                }
+            )
+        }
+    }
 }
 
 @Composable
