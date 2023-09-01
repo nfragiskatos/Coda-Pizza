@@ -1,6 +1,5 @@
 package com.nfragiskatos.codapizza.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,14 +30,14 @@ import java.text.NumberFormat
 fun PizzaBuilderScreen(
     modifier: Modifier = Modifier
 ) {
-    var pizza by remember {
+    var pizza by rememberSaveable {
         mutableStateOf(Pizza())
     }
 
     Column(modifier = modifier) {
         ToppingsList(
             pizza = pizza,
-            onEditPizza = {pizza = it},
+            onEditPizza = { pizza = it },
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f, fill = true)
@@ -65,14 +65,16 @@ private fun ToppingsList(
                 placement = pizza.toppings[topping],
                 onClickTopping = {
                     val isOnPizza = pizza.toppings[topping] != null
-                    onEditPizza( pizza.withTopping(
-                        topping = topping,
-                        placement = if (isOnPizza) {
-                            null
-                        } else {
-                            ToppingPlacement.All
-                        }
-                    ))
+                    onEditPizza(
+                        pizza.withTopping(
+                            topping = topping,
+                            placement = if (isOnPizza) {
+                                null
+                            } else {
+                                ToppingPlacement.All
+                            }
+                        )
+                    )
                 }
             )
         }
@@ -93,7 +95,10 @@ private fun OrderButton(
         }
         val price = currencyFormatter.format(pizza.price)
         Text(
-            text = stringResource(id = R.string.place_order_button, price).toUpperCase(Locale.current)
+            text = stringResource(
+                id = R.string.place_order_button,
+                price
+            ).toUpperCase(Locale.current)
         )
     }
 }
