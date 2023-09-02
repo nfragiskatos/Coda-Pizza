@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import com.nfragiskatos.codapizza.R
 import com.nfragiskatos.codapizza.model.Pizza
 import com.nfragiskatos.codapizza.model.Topping
-import com.nfragiskatos.codapizza.model.ToppingPlacement
 import java.text.NumberFormat
 
 @Preview
@@ -58,23 +57,29 @@ private fun ToppingsList(
     onEditPizza: (Pizza) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    var toppingBeingAdded by rememberSaveable {
+        mutableStateOf<Topping?>(null)
+    }
+
+    toppingBeingAdded?.let { topping: Topping ->
+        ToppingPlacementDialog(
+            topping = topping,
+            onSetToppingPlacement = { placement ->
+                onEditPizza(pizza.withTopping(topping = topping, placement = placement))
+            },
+            onDismissRequest = { toppingBeingAdded = null }
+        )
+    }
+
+
     LazyColumn(modifier = modifier) {
         items(Topping.values()) { topping ->
             ToppingCell(
                 topping = topping,
                 placement = pizza.toppings[topping],
                 onClickTopping = {
-                    val isOnPizza = pizza.toppings[topping] != null
-                    onEditPizza(
-                        pizza.withTopping(
-                            topping = topping,
-                            placement = if (isOnPizza) {
-                                null
-                            } else {
-                                ToppingPlacement.All
-                            }
-                        )
-                    )
+                    toppingBeingAdded = topping
                 }
             )
         }
