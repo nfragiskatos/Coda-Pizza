@@ -6,7 +6,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExposedDropdownMenuBox
+import androidx.compose.material.ExposedDropdownMenuDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,9 +26,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nfragiskatos.codapizza.R
 import com.nfragiskatos.codapizza.model.Pizza
+import com.nfragiskatos.codapizza.model.Size
 import com.nfragiskatos.codapizza.model.Topping
 import java.text.NumberFormat
 
+@OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable
 fun PizzaBuilderScreen(
@@ -33,7 +40,52 @@ fun PizzaBuilderScreen(
         mutableStateOf(Pizza())
     }
 
-    Column(modifier = modifier) {
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+
+    Column(modifier = modifier.fillMaxWidth()) {
+
+
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded },
+            modifier = Modifier
+                .fillMaxWidth()
+
+        ) {
+            TextField(
+                readOnly = true,
+                value = stringResource(id = pizza.size.label),
+                onValueChange = {},
+                label = {
+                    Text(
+                        "Size"
+                    )
+                },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                modifier = modifier.fillMaxWidth()
+            )
+
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = modifier.fillMaxWidth()
+            ) {
+                Size.values().forEach { size ->
+                    DropdownMenuItem(onClick = {
+                        pizza = pizza.withSize(size)
+                        expanded = false
+                    }) {
+                        Text(text = stringResource(id = size.label))
+                    }
+                }
+            }
+        }
+
         ToppingsList(
             pizza = pizza,
             onEditPizza = { pizza = it },
@@ -41,6 +93,7 @@ fun PizzaBuilderScreen(
                 .fillMaxWidth()
                 .weight(1f, fill = true)
         )
+
         OrderButton(
             pizza = pizza,
             modifier = Modifier
