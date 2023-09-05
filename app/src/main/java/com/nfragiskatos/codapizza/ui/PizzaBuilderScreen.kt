@@ -10,8 +10,10 @@ import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.ExposedDropdownMenuDefaults
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,64 +46,69 @@ fun PizzaBuilderScreen(
         mutableStateOf(false)
     }
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Scaffold(
+        modifier = modifier,
+        topBar = { TopAppBar(title = { Text(text = stringResource(id = R.string.app_name)) }) },
+        content = {
+            Column(modifier = modifier.fillMaxWidth()) {
 
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded },
+                    modifier = Modifier
+                        .fillMaxWidth()
 
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded },
-            modifier = Modifier
-                .fillMaxWidth()
-
-        ) {
-            TextField(
-                readOnly = true,
-                value = stringResource(id = pizza.size.label),
-                onValueChange = {},
-                label = {
-                    Text(
-                        "Size"
+                ) {
+                    TextField(
+                        readOnly = true,
+                        value = stringResource(id = pizza.size.label),
+                        onValueChange = {},
+                        label = {
+                            Text(
+                                "Size"
+                            )
+                        },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                        },
+                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                        modifier = modifier.fillMaxWidth()
                     )
-                },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                modifier = modifier.fillMaxWidth()
-            )
 
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = modifier.fillMaxWidth()
-            ) {
-                Size.values().forEach { size ->
-                    DropdownMenuItem(onClick = {
-                        pizza = pizza.withSize(size)
-                        expanded = false
-                    }) {
-                        Text(text = stringResource(id = size.label))
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = modifier.fillMaxWidth()
+                    ) {
+                        Size.values().forEach { size ->
+                            DropdownMenuItem(onClick = {
+                                pizza = pizza.withSize(size)
+                                expanded = false
+                            }) {
+                                Text(text = stringResource(id = size.label))
+                            }
+                        }
                     }
                 }
+
+                ToppingsList(
+                    pizza = pizza,
+                    onEditPizza = { pizza = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f, fill = true)
+                )
+
+                OrderButton(
+                    pizza = pizza,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(64.dp)
+                )
+
             }
         }
-
-        ToppingsList(
-            pizza = pizza,
-            onEditPizza = { pizza = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f, fill = true)
-        )
-
-        OrderButton(
-            pizza = pizza,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(64.dp)
-        )
-
-    }
+    )
 }
 
 @Composable
