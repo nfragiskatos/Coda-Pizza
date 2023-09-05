@@ -23,4 +23,5 @@
     <string name="topping_pepperoni">Pepperoni</string>
     <string name="topping_pineapple">Pineapple</string>
 
+    <string name="order_placed_toast">Order submitted!</string>
 </resources>
